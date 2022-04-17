@@ -1,4 +1,4 @@
-export interface ImageObject {
+export interface OriginalImageObject {
     hasavif: number | boolean;
     hash: string;
     haswebp: number | boolean;

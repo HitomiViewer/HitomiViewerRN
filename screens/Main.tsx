@@ -1,23 +1,29 @@
 import React from "react";
-import { StyleSheet, FlatList, View } from "react-native";
+import { StyleSheet, FlatList, View, Text } from "react-native";
 import Viewer from "./Viewer";
 import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
-import { Item } from "../components/Item";
-import { GetList } from "../module/kitomi";
+import { ItemTemplate } from "../components/Item";
+import { OriginalGallery } from "../types/Module";
 
-type Props = DrawerScreenProps<RootParamList, 'Main'>;
+type Props = DrawerScreenProps<RootParamList>;
 
-interface State {
-  data: Array<any>;
+interface State<DataType> {
+  data: Array<DataType>;
   loading: boolean;
 }
 
-export class MainScreen extends React.Component<Props, State> {
-  private index: number;
+export class MainScreenTemplate<DataType extends OriginalGallery> extends React.Component<Props, State<DataType>> {
+  protected styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
+
   constructor(props: Props) {
     super(props);
-    const { route } = this.props;
-    this.index = route.params.index | 1;
     this.state = {
       data: [],
       loading: false
@@ -26,21 +32,28 @@ export class MainScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     const { route, navigation } = this.props;
-    GetList(this.index).then((data) => {
-      navigation.setOptions({ title: `hiyobi.me - ${this.index}p`});
-      return this.setState({ data });
-    });
+    if (!('index' in route.params)) return;
+    this.fetchData(route.params.index | 1, navigation)
   }
 
-  renderItem({ item }: any, navigation: DrawerNavigationProp<RootParamList, "Main">) {
+  componentDidUpdate(prevProps: Props) {
+    const { route, navigation } = this.props;
+    if (!('index' in route.params && 'index' in prevProps.route.params)) return;
+    if (prevProps.route.params.index != route.params.index)
+      this.fetchData(route.params.index | 1, navigation)
+  }
+
+  protected fetchData(index: number, navigation: DrawerNavigationProp<RootParamList>) { }
+
+  protected renderItem({ item }: { item: OriginalGallery }, navigation: DrawerNavigationProp<RootParamList>) {
     return (
-      <Item item={item} navigation={this.props.navigation}/>
+      <Text>Please override renderItem function</Text>
     );
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={this.styles.container}>
         <FlatList
           data={this.state.data}
           renderItem={(item) => this.renderItem(item, this.props.navigation)}
@@ -50,15 +63,6 @@ export class MainScreen extends React.Component<Props, State> {
       </View>
     );
   }
-};
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
-export default MainScreen;
+export default MainScreenTemplate;
