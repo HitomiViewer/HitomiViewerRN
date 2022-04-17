@@ -1,3 +1,4 @@
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 import React, { Component, useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, Dimensions, TouchableNativeFeedback } from "react-native";
 import { Artists, Characters, Parodys, Tags, TypeKor } from "../module/kitomi";
@@ -6,6 +7,7 @@ import Tag from "./Tag";
 
 interface Props {
     item: any;
+    navigation: DrawerNavigationProp<RootParamList, 'Main'>;
 }
 
 interface State {
@@ -18,8 +20,9 @@ export class Item extends React.Component<Props> {
         super(props);
     }
 
-    onPress() {
-        console.log("clicked@");
+    onPress(props: Props) {
+        const { item, navigation } = this.props;
+        navigation.navigate('Viewer', { id: item.id });
     }
 
     onLongPress() {
@@ -31,14 +34,14 @@ export class Item extends React.Component<Props> {
         return (
             <View style={styles.border}>
                 <TouchableNativeFeedback
-                    onPress={this.onPress}
+                    onPress={(event) => this.onPress(this.props)}
                     onLongPress={this.onLongPress}>
                     <Image
                         style={[styles.image, { alignSelf: 'center' }]}
                         source={{ uri: `https://tn.hiyobi.me/tn/${item.id}.jpg` }}
                     />
                 </TouchableNativeFeedback>
-                <Text style={styles.title} onPress={this.onPress}>
+                <Text style={styles.title} onPress={(event) => this.onPress(this.props)}>
                     {item.title}
                 </Text>
                 <View style={{ marginTop: 10 }}>

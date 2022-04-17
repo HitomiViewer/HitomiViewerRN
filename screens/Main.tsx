@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, FlatList, View } from "react-native";
 import Viewer from "./Viewer";
-import { DrawerScreenProps } from "@react-navigation/drawer";
+import { DrawerNavigationProp, DrawerScreenProps } from "@react-navigation/drawer";
 import { Item } from "../components/Item";
-import { Refine } from "../module/kitomi";
+import { GetList } from "../module/kitomi";
 
 type Props = DrawerScreenProps<RootParamList, 'Main'>;
 
@@ -26,30 +26,15 @@ export class MainScreen extends React.Component<Props, State> {
 
   componentDidMount() {
     const { route, navigation } = this.props;
-    fetch(`https://apiomi.nahee.kim/data`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        query: `SELECT * FROM galleries ORDER BY id DESC LIMIT ${(this.index - 1) * 25},25`
-      })
-    })
-      .then((res) => res.json())
-      .then((res) => Refine(res))
-      .then((res) => {
-        console.log(res);
-        navigation.setOptions({ title: `hiyobi.me - ${this.index}p`});
-        return this.setState({ data: res });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    GetList(this.index).then((data) => {
+      navigation.setOptions({ title: `hiyobi.me - ${this.index}p`});
+      return this.setState({ data });
+    });
   }
 
-  renderItem({ item }: any) {
+  renderItem({ item }: any, navigation: DrawerNavigationProp<RootParamList, "Main">) {
     return (
-      <Item item={item}/>
+      <Item item={item} navigation={this.props.navigation}/>
     );
   }
 
@@ -58,7 +43,7 @@ export class MainScreen extends React.Component<Props, State> {
       <View style={styles.container}>
         <FlatList
           data={this.state.data}
-          renderItem={this.renderItem}
+          renderItem={(item) => this.renderItem(item, this.props.navigation)}
           keyExtractor={(item) => String(item.id)}
           style={{ width: '100%' }}
         />

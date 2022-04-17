@@ -1,7 +1,16 @@
 import { ArtistObject, CharacterObject, DisplayValueObject, GroupObject, ParodyObject } from "../types/Info";
 
+export async function GetFiles(id: number) {
+    return await fetch(`https://cdn.hiyobi.me/json/${id}_list.json`)
+        .then((res) => res.json())
+        .catch((err) => {
+            console.log(err);
+            return [];
+        });
+}
+
 export function TypeKor(type: number) {
-    switch(type) {
+    switch (type) {
         case 1:
             return "동인지";
         case 2:

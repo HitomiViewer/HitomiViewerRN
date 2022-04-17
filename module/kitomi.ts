@@ -1,13 +1,63 @@
 import { ArtistObject, CharacterObject, DisplayValueObject, GroupObject, ParodyObject, TagObject } from "../types/Info";
 
-export async function LoadTags() {
+export async function GetList(index: number) {
+    return await fetch(`https://apiomi.nahee.kim/data`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            query: `SELECT * FROM galleries ORDER BY id DESC LIMIT ${(index - 1) * 25},25`
+        })
+    }).then((res) => res.json())
+        .then((res) => Refine(res))
+        .catch((err) => {
+            console.log(err);
+            return [];
+        });
+}
+
+export async function GetData(id: number) {
+    return (await fetch(`https://apiomi.nahee.kim/data`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            query: `SELECT * FROM galleries WHERE id=${id}`
+        })
+    }).then((res) => res.json())
+        .then((res) => Refine(res))
+        .catch((err) => {
+            console.log(err);
+            return [undefined];
+        }))[0];
+}
+
+export async function GetFiles(ids: number[]) {
+    return await fetch(`https://apiomi.nahee.kim/files`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            query: `SELECT * FROM files WHERE oid in (${ids.filter(x => x).join(',')})`
+        })
+    }).then((res) => res.json())
+        .catch((err) => {
+            console.log(err);
+            return [];
+        });
+}
+
+export async function LoadTags(ids: any[] = []) {
     let data = await fetch('https://apiomi.nahee.kim/data', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          query: `SELECT *, oid FROM tags`
+            query: ids ? `SELECT * FROM tags WHERE oid in (${ids.filter(x => x).join(',')})` : 'SELECT *, oid FROM tags'
         })
     }).then((res) => res.json())
         .catch((err) => console.log(err));
@@ -15,7 +65,7 @@ export async function LoadTags() {
 }
 
 export async function Refine(data: Array<any>) {
-    let tags = await LoadTags();
+    let tags = await LoadTags(data.flatMap(x => x.tag_ids));
     return data.map(x => ({
         artists: [x.artist],
         category: null,
