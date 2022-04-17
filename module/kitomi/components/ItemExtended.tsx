@@ -2,11 +2,10 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import React from "react";
 import { View, Text, Image, TouchableNativeFeedback } from "react-native";
-import { Tag } from ".";
-import { Gallery } from "..";
 import { ItemTemplate } from "../../../components/Item";
-import { TagObject } from "../types";
+import { Gallery, TagObject } from "../types";
 import { GetFile, LoadTags } from "../wrapper";
+import { Tag } from "./Tag";
 
 interface Props {
     item: Gallery;
@@ -29,7 +28,7 @@ export class ItemExtendHiyobi extends ItemTemplate<Props, State> {
 
     protected onPress(props: Props) {
         const { item, navigation } = this.props;
-        navigation.navigate('Viewer-Kitomi', { id: item.id });
+        navigation.navigate('Viewer-Kitomi-Extend-Hiyobi', { id: item.id });
     }
 
     protected onLongPress() {

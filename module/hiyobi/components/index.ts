@@ -1,2 +1,2 @@
-export { HiyobiItem as Item } from './Item';
-export { HiyobiTag as Tag } from './Tag';
+export { Item } from './Item';
+export { Tag } from './Tag';

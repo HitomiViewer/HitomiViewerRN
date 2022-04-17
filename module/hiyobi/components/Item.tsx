@@ -2,17 +2,16 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import React from "react";
 import { View, Text, Image, TouchableNativeFeedback, ImageSourcePropType } from "react-native";
-import { Tag } from ".";
-import { Gallery } from "..";
+import { Tag } from "./Tag";
 import { ItemTemplate } from "../../../components/Item";
-import { DisplayValue } from "../types";
+import { DisplayValue, Gallery } from "../types";
 
 interface Props {
     item: Gallery;
     navigation: DrawerNavigationProp<RootParamList, 'Main-Hiyobi'>;
 }
 
-export class HiyobiItem extends ItemTemplate<Props> {
+export class Item extends ItemTemplate<Props> {
 
     protected onPress(props: Props) {
         const { item, navigation } = this.props;

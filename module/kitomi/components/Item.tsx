@@ -2,10 +2,10 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import React from "react";
 import { View, Text, Image, TouchableNativeFeedback } from "react-native";
-import { Tag } from ".";
 import { ItemTemplate } from "../../../components/Item";
 import { Gallery, TagObject } from "../types";
 import { GetFile, LoadTags } from "../wrapper";
+import { Tag } from "./Tag";
 
 interface Props {
     item: Gallery;

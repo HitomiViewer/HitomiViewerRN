@@ -15,7 +15,7 @@ type RootParamList = {
         id: unknown
     };
     'Viewer-Kitomi-Extend-Hiyobi': {
-        index: number
+        id: number
     };
 };
 

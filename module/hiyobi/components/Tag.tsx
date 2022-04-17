@@ -7,7 +7,7 @@ interface Props {
     tag: DisplayValue
 }
 
-export class HiyobiTag extends TagTemplate<Props> {
+export class Tag extends TagTemplate<Props> {
     get tagStyle() {
         const { tag } = this.props;
         switch (tag.value.split(':')[0]) {
